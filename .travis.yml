@@ -3,7 +3,8 @@ language: python
 python: "2.7"
 
 # Use the new container infrastructure
-name: Ubuntu
+# name: Ubuntu
+dist: yakkety
 sudo: required
 
 # Install ansible
