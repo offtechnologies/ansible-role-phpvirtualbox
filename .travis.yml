@@ -23,11 +23,11 @@ install:
   - printf '[defaults]\nroles_path=../' >ansible.cfg
 
 script:
-  # syntax check
+  # first test - syntax check
   - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
 
-  # role check
-  #- ansible-playbook -i tests/inventory tests/test.yml --connection=local --sudo
+  # second test - role check
+  - ansible-playbook -i tests/inventory tests/test.yml --connection=local --sudo
 
   # make sure it's idempotent
   #- >
