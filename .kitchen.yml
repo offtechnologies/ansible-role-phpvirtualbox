@@ -1,0 +1,24 @@
+---
+
+driver:
+  name: vagrant
+
+transport:
+  max_ssh_sessions: 6
+
+provisioner:
+  name: ansible
+  hosts: localhost
+  require_chef_for_busser: false
+  require_ruby_for_busser: false
+
+platforms:
+  - name: ubuntu-16.10
+
+suites:
+  - name: default
+    provisioner:
+      name: ansible_playbook
+      playbook: test/integration/default/test.yml
+      additional_copy_path:
+        - "."

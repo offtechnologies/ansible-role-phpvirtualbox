@@ -1,0 +1,63 @@
+# phpVirtualBox setup:
+
+- name: offtechnologies.phpVirtualbox | Install Apache, PHP and other dependencies
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - apache2
+    - php
+    - php-common
+    - php-soap
+    - php-gd
+    - php-xml
+
+- name: offtechnologies.phpVirtualbox | Create webdir
+  file:
+    path: /var/www/html/
+    state: directory
+
+- name: offtechnologies.phpVirtualbox | Check if phpVirtualBox exists
+  stat:
+    path: /var/www/html/vboxinit
+  register: phpvirtualbox_installed
+
+- name: offtechnologies.phpVirtualbox | Delete default index.html
+  file:
+    path: /var/www/html/index.html
+    state: absent
+  when: phpvirtualbox_installed.stat.exists == False
+
+- name: offtechnologies.phpVirtualbox | Download source
+  shell: "cd /tmp/ &&  wget 'http://sourceforge.net/projects/phpvirtualbox/files/latest/download'"
+  when: phpvirtualbox_installed.stat.exists == False
+
+- name: offtechnologies.phpVirtualbox | Install phpVirtualBox
+  unarchive:
+    copy: no
+    src: "/tmp/download"
+    dest: "/var/www/html/"
+  when: phpvirtualbox_installed.stat.exists == False
+
+- name: offtechnologies.phpVirtualbox | move data
+  shell: "mv /var/www/html/phpvirtualbox-*/* /var/www/html/ && rm -r /var/www/html/phpvirtualbox-*/"
+  when: phpvirtualbox_installed.stat.exists == False
+
+- name: offtechnologies.phpVirtualbox | copy php config file
+  template:
+    src: config.php.j2
+    dest: /var/www/html/config.php
+
+- name: offtechnologies.phpVirtualbox | Enable vboxweb service
+  become: yes
+  systemd:
+    name: vboxweb
+    state: started
+    enabled: True
+
+- name: offtechnologies.phpVirtualbox | copy vboxweb.service template and restart deamon
+  template:
+    src: virtualbox.j2
+    dest: /etc/default/virtualbox
+  notify:
+    - restart vboxweb

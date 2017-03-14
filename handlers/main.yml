@@ -1,0 +1,6 @@
+---
+# handlers file for ansible-role-phpvirtualbox
+- name: restart vboxweb
+  service:
+    name: vboxweb
+    state: restarted

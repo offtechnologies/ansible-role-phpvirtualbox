@@ -1,0 +1,6 @@
+---
+# defaults file for ansible-role-phpvirtualbox
+
+virtualbox_user: offtech
+virtualbox_user_pw: offtech
+virtualbox_user_sha_pw: "$6$K9midrBWKofEvJQX$hPvORHtR0Vx/38HIDmFo.b/gbKYO2/t6PU1KDe.CjSdkz2jJOM8wFrZZABb.dJzM7yWYO9ZBP/qvQOLCIbZ67."

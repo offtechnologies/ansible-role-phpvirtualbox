@@ -1,0 +1,51 @@
+# Virtualbox setup
+
+- name: offtechnologies.phpVirtualbox | Install dependencies
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - build-essential
+    - linux-image-generic
+    - linux-headers-generic
+    - dkms
+    - unzip
+
+- name: offtechnologies.phpVirtualbox | Add repository key
+  apt_key:
+    url: https://www.virtualbox.org/download/oracle_vbox_2016.asc
+    state: present
+
+- name: offtechnologies.phpVirtualbox | Add repository to apt
+  apt_repository:
+    repo: 'deb http://download.virtualbox.org/virtualbox/debian yakkety contrib'
+    state: present
+    update_cache: yes
+
+- name: offtechnologies.phpVirtualbox | Install VirtualBox
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - virtualbox
+    - virtualbox-guest-additions-iso
+    - virtualbox-ext-pack
+
+- name: offtechnologies.phpVirtualbox | Add user
+  user:
+    name: "{{virtualbox_user}}"
+    createhome: yes
+    shell: '/bin/bash'
+    state: present
+    append: yes
+    groups: vboxusers
+    update_password: on_create
+    password: "{{virtualbox_user_sha_pw}}"
+
+- name: offtechnologies.phpVirtualbox | Create ISO folder
+  file:
+    path: /home/{{virtualbox_user}}/isos
+    owner: "{{virtualbox_user}}"
+    group: vboxusers
+    mode: 0770
+    state: directory
